@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>paint spill game - Kunal Khatri</title>
+</head>
+<body>
+    <workspace>
+        <div class="info-box">
+            info box
+        </div>
+        <div class="playground" id="playground">
+        </div>
+        <div class="color-pots">
+            <div class="color-pot" ></div> 
+            <div class="color-pot" ></div> 
+            <div class="color-pot" ></div> 
+            <div class="color-pot" ></div> 
+            <div class="color-pot" ></div> 
+            <div class="color-pot" ></div> 
+        </div>
+    </workspace>
+    <script>
+        const grid_size = 10;
+        const color_array = [
+            'red',
+            'orange',
+            'green',
+            'blue',
+            'purple',
+            'pink'
+        ];
+        window.addEventListener("load",setup_board);
+        function setup_board() {
+            document.querySelectorAll(".color-pot").forEach((el,i)=>{
+                el.style.backgroundColor = color_array[i];
+                el.setAttribute("data-color",color_array[i]);
+
+                el.addEventListener("click",spill_color);
+            });
+            const playground = document.getElementById("playground");
+            for (let i =0;i<grid_size;i++){
+                let row = document.createElement("div");
+                row.className = "row";
+                for (let j =0;j<grid_size;j++){
+                    let box = document.createElement("div");
+                    box.className="box";
+                    let box_color = color_array[parseInt(Math.random()*color_array.length)];
+                    box.setAttribute("data-color",box_color);
+                    box.style.backgroundColor = box_color;
+                    row.appendChild(box);
+                }
+                playground.appendChild(row);
+            }
+        }
+
+        function spill_color(event){
+            let color_box = event.target;
+            let color_to_spread = color_box.getAttribute("data-color");
+
+            let first_box = document.querySelector(".playground .row:first-of-type .box:first-of-type");
+
+            first_box.style.backgroundColor = color_to_spread;
+        }
+    </script>
+    <style>
+        :root {
+            --color-pot-size:60px;
+            --gap-between-tiles:3px;
+        }
+
+        * {
+            padding: 0;
+            margin:0;
+            font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+        body {
+            display: grid;
+            place-content: center;
+
+            width: 100vw;
+            height: 100vh;
+
+            background-color: #555;
+        }
+
+        workspace {
+            width:max(100%,600px);
+            height: 700px;
+
+            border-radius: 5px;
+            border:1px solid #dadada;
+            background-color: white;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+            display: grid;
+            grid-template-rows: 1fr auto 100px;
+        }
+
+        .info-box {
+            display: grid;
+            place-content: center;
+        }
+
+        .playground {
+            background-color: #e5e5e5;
+            padding: 40px 20px;
+
+            display: flex;
+            flex-flow: column;
+            gap:var(--gap-between-tiles);
+        }
+
+        .playground .row {
+            display: flex;
+            flex-flow: row nowrap;
+            gap:var(--gap-between-tiles);
+            align-items: center;
+            justify-content: stretch;
+
+        }
+
+        .playground .row:first-of-type .box:first-of-type {
+            border:1px solid black;
+        }
+        .playground .row .box {
+            background-color: red;
+
+            flex-grow: 1;
+            aspect-ratio: 1/1;
+            border-radius: 2px;
+        }
+
+
+
+        .color-pots {
+            display: flex;
+            flex-flow: row nowrap;
+
+            align-items: center;
+            justify-content: space-evenly;
+
+        }
+
+        .color-pots .color-pot {
+            display: block;
+            width: var(--color-pot-size);
+            height: var(--color-pot-size);
+            content: attr(data-color);
+
+            border-radius: 5px;
+            border:1px solid #dadada;
+            cursor: pointer;
+        }
+    </style>
+</body>
+</html>

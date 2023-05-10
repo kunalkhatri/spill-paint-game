@@ -25,13 +25,16 @@
     <script>
         const grid_size = 10;
         const color_array = [
-            'red',
-            'orange',
-            'green',
-            'blue',
-            'purple',
-            'pink'
+            '#ff8c82',
+            '#f9c440',
+            '#68b723',
+            '#3689e6',
+            '#a56de2',
+            '#f4679d',
+            '#f4679d'
         ];
+
+        var previous_color = "";
         window.addEventListener("load",setup_board);
         function setup_board() {
             document.querySelectorAll(".color-pot").forEach((el,i)=>{
@@ -49,7 +52,10 @@
                     box.className="box";
                     let box_color = color_array[parseInt(Math.random()*color_array.length)];
                     box.setAttribute("data-color",box_color);
+                    box.setAttribute("data-identifiers",`${i}-${j}`)
                     box.style.backgroundColor = box_color;
+
+                    box.addEventListener("click",(event)=>{find_adjacent_boxes(event.target)});
                     row.appendChild(box);
                 }
                 playground.appendChild(row);
@@ -58,17 +64,63 @@
 
         function spill_color(event){
             let color_box = event.target;
+            document.querySelectorAll(".color-pot").forEach(el=>el.classList.remove("last_clicked"));
+            color_box.classList.add("last_clicked");
             let color_to_spread = color_box.getAttribute("data-color");
-
+            previous_color = getcolor(first_box);
+            
             let first_box = document.querySelector(".playground .row:first-of-type .box:first-of-type");
+            // to be done, check if the color clicked is different from what already is
+            
+            setcolor(first_box,color_to_spread);
 
-            first_box.style.backgroundColor = color_to_spread;
+            spill_to_adjacent_boxes(first_box);
+        }
+
+        function find_adjacent_boxes(box){
+            let return_arary = [];
+            let to_right = box.nextElementSibling;
+            if (to_right) return_arary.push(to_right);
+            let to_left = box.previousElementSibling;
+            if (to_left) return_arary.push(to_left);
+
+            let row_id = parseInt( box.getAttribute("data-identifiers").split("-")[0] );
+            let col_id = parseInt( box.getAttribute("data-identifiers").split("-")[1] );
+
+            let to_top = document.querySelector(`.box[data-identifiers='${row_id - 1}-${col_id}']`);
+            if (to_top) return_arary.push(to_top);
+
+            let to_bottom = document.querySelector(`.box[data-identifiers='${row_id + 1}-${col_id}']`);
+            if (to_bottom) return_arary.push(to_bottom);
+
+            return return_arary;
+        }
+
+        function spill_to_adjacent_boxes(first_box){
+            let adjacent_boxes = find_adjacent_boxes(first_box);
+            var current_color = getcolor(first_box);
+
+            let more_boxes_to_process=[];
+            adjacent_boxes.forEach(box=>{
+                if (getcolor(box) == current_color){
+
+                }
+            })
+        }
+
+        function getcolor(box){
+            return box.getAttribute("data-color");
+        }
+        function setcolor(box,color){
+            box.setAttribute("data-color",color);
+            box.style.backgroundColor = color;
         }
     </script>
     <style>
         :root {
-            --color-pot-size:60px;
-            --gap-between-tiles:3px;
+            --color-pot-size:50px;
+            --color-pot-size:50px;
+            --gap-between-tiles:1px;
         }
 
         * {
@@ -87,8 +139,8 @@
         }
 
         workspace {
-            width:max(100%,600px);
-            height: 700px;
+            width:350px;
+            height: 600px;
 
             border-radius: 5px;
             border:1px solid #dadada;
@@ -122,6 +174,9 @@
 
         }
 
+        .playground .row .box {
+            border:1px solid transparent;
+        }
         .playground .row:first-of-type .box:first-of-type {
             border:1px solid black;
         }
@@ -130,7 +185,7 @@
 
             flex-grow: 1;
             aspect-ratio: 1/1;
-            border-radius: 2px;
+            border-radius: 1px;
         }
 
 
@@ -153,6 +208,14 @@
             border-radius: 5px;
             border:1px solid #dadada;
             cursor: pointer;
+
+            background-position: center;
+            background-size: 70%;
+            background-repeat: no-repeat;
+        }
+
+        .color-pots .color-pot.last_clicked {
+            background-image: url(img/paint.svg);
         }
     </style>
 </body>

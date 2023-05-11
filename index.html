@@ -152,6 +152,7 @@
             height: 100svh;
 
             background-color: #555;
+            overflow-y: auto;
         }
 
         workspace {
@@ -165,11 +166,6 @@
             flex-flow: column;
             overflow: hidden;
         }
-
-        workspace.expanded {
-            grid-template-rows:500px 60px auto 100px;
-        }
-
 
         .expandable {
             display: flex;
@@ -187,10 +183,9 @@
         .expandable .help-close-button {
             align-self: flex-end;
         }
+
         workspace.expanded .expandable {
-
             max-height: 500px;
-
             padding: 20px;
         }
         .info-box {
@@ -210,6 +205,16 @@
             display: flex;
             flex-flow: column;
             gap:var(--gap-between-tiles);
+
+            transition: all ease .24s;
+            overflow: hidden;
+
+            max-height: fit-content;
+        }
+
+        workspace.expanded .playground, workspace.expanded .color-pots {
+            max-height: 0;
+            padding: 0;
         }
 
         .playground .row {
@@ -245,6 +250,9 @@
             justify-content: space-evenly;
 
             padding:20px 0;
+
+            overflow: hidden;
+            transition: all ease .24s;
 
         }
 

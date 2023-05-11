@@ -8,8 +8,19 @@
 </head>
 <body>
     <workspace>
+        <div class="expandable">
+            <img src="img/close.svg" alt="close help box" class="help-close-button" onclick="document.querySelector('workspace').classList.toggle('expanded');" width="40"/>
+            <img src="img/image.png" height="300" width="200" />
+            <b>Fill the board with al lthe same colour paint before running out of moves.</b>
+            <span>Click the paint buttons at bottom to spill a new paint colour onto the board starting in the top-left colour. <br/>Newly Adjancent squares of the same colour add to the total filled space.</span>
+        </div>
         <div class="info-box">
-            Paint Spill game
+            <div>
+                Paint Spill game
+            </div>
+            <div>
+                <img src="img/help.svg" alt="help button" onclick="document.querySelector('workspace').classList.toggle('expanded');" width="40" >
+            </div>
         </div>
         <div class="playground" id="playground">
         </div>
@@ -23,7 +34,7 @@
         </div>
     </workspace>
     <script>
-        const grid_size = 10;
+        const grid_size = 5;
         const color_array = [
             '#ff8c82',
             '#f9c440',
@@ -145,18 +156,49 @@
 
         workspace {
             width:375px;
-            height: 600px;
 
             border-radius: 5px;
-            border:1px solid #dadada;
             background-color: white;
             box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
-            display: grid;
-            grid-template-rows: 1fr auto 100px;
+            display: flex;
+            flex-flow: column;
+            overflow: hidden;
         }
 
+        workspace.expanded {
+            grid-template-rows:500px 60px auto 100px;
+        }
+
+
+        .expandable {
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #dadada;            
+            
+            overflow: hidden;
+            max-height: 0;
+
+            transition: all ease .25s;
+
+        }
+        .expandable .help-close-button {
+            align-self: flex-end;
+        }
+        workspace.expanded .expandable {
+
+            max-height: 500px;
+
+            padding: 20px;
+        }
         .info-box {
+            display: grid;
+            grid-template-columns: 1fr 60px;
+        }
+
+        .info-box div {
             display: grid;
             place-content: center;
         }
@@ -201,6 +243,8 @@
 
             align-items: center;
             justify-content: space-evenly;
+
+            padding:20px 0;
 
         }
 

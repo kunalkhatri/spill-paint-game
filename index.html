@@ -9,7 +9,7 @@
 <body>
     <workspace>
         <div class="info-box">
-            info box
+            Paint Spill game
         </div>
         <div class="playground" id="playground">
         </div>
@@ -35,7 +35,9 @@
         ];
 
         var previous_color = "";
+
         window.addEventListener("load",setup_board);
+
         function setup_board() {
             document.querySelectorAll(".color-pot").forEach((el,i)=>{
                 el.style.backgroundColor = color_array[i];
@@ -67,9 +69,10 @@
             document.querySelectorAll(".color-pot").forEach(el=>el.classList.remove("last_clicked"));
             color_box.classList.add("last_clicked");
             let color_to_spread = color_box.getAttribute("data-color");
-            previous_color = getcolor(first_box);
+            
             
             let first_box = document.querySelector(".playground .row:first-of-type .box:first-of-type");
+            previous_color = getcolor(first_box);
             // to be done, check if the color clicked is different from what already is
             
             setcolor(first_box,color_to_spread);
@@ -102,10 +105,12 @@
 
             let more_boxes_to_process=[];
             adjacent_boxes.forEach(box=>{
-                if (getcolor(box) == current_color){
-
+                if (getcolor(box) == previous_color){
+                    setcolor(box,getcolor(first_box));
+                    more_boxes_to_process.push(box);
                 }
-            })
+            });
+            more_boxes_to_process.forEach(box=>spill_to_adjacent_boxes(box));
         }
 
         function getcolor(box){
@@ -139,7 +144,7 @@
         }
 
         workspace {
-            width:350px;
+            width:375px;
             height: 600px;
 
             border-radius: 5px;

@@ -7,6 +7,18 @@
     <title>paint spill game - Kunal Khatri</title>
 </head>
 <body>
+    <div class="modal-wrapper">
+        <div class="modal-window">
+            <div class="victory-message"></div>
+            <div class="game_mode_selector">
+                <label for="game_easy"><input type="radio" id="game_easy" name="game-level" onclick="set_game_mode(5);"> Easy [5x5]</label>
+                <label for="game_medium"><input type="radio" id="game_medium" name="game-level" checked onclick="set_game_mode(10);"> Normal [10x10]</label>
+                <label for="game_hard"><input type="radio" id="game_hard" name="game-level" onclick="set_game_mode(15);"> Hard [15x15]</label>
+            </div>
+            <br>
+            <button class="btn primary" onclick="setup_board();">Start Game</button>
+        </div>
+    </div>
     <workspace>
         <div class="expandable">
             <img src="img/close.svg" alt="close help box" class="help-close-button" onclick="document.querySelector('workspace').classList.toggle('expanded');" width="40"/>
@@ -15,10 +27,16 @@
             <span>Click the paint buttons at bottom to spill a new paint colour onto the board starting in the top-left colour. <br/>Newly Adjancent squares of the same colour add to the total filled space.</span>
         </div>
         <div class="info-box">
-            <div>
-                Paint Spill game
+            <div class="title-score">
+                <div class="title">
+                    Paint Spill game
+                </div>
+                <div class="score">
+                    Moves used 0
+                </div>
             </div>
-            <div>
+            <div class="action_buttons">
+                <img src="img/refresh.svg" alt="new game" onclick="document.querySelector('.modal-wrapper').style.display='';" width="40" >
                 <img src="img/help.svg" alt="help button" onclick="document.querySelector('workspace').classList.toggle('expanded');" width="40" >
             </div>
         </div>
@@ -34,7 +52,8 @@
         </div>
     </workspace>
     <script>
-        const grid_size = 5;
+        var moves_used = 0;
+        var grid_size = 10;
         const color_array = [
             '#ff8c82',
             '#f9c440',
@@ -49,7 +68,8 @@
 
         window.addEventListener("load",setup_board);
 
-        function setup_board() {
+        function setup_board(event=null) {
+
             document.querySelectorAll(".color-pot").forEach((el,i)=>{
                 el.style.backgroundColor = color_array[i];
                 el.setAttribute("data-color",color_array[i]);
@@ -57,6 +77,7 @@
                 el.addEventListener("click",spill_color);
             });
             const playground = document.getElementById("playground");
+            playground.innerHTML = "";
             for (let i =0;i<grid_size;i++){
                 let row = document.createElement("div");
                 row.className = "row";
@@ -67,14 +88,21 @@
                     box.setAttribute("data-color",box_color);
                     box.setAttribute("data-identifiers",`${i}-${j}`)
                     box.style.backgroundColor = box_color;
-
-                    box.addEventListener("click",(event)=>{find_adjacent_boxes(event.target)});
                     row.appendChild(box);
                 }
                 playground.appendChild(row);
             }
+            if (event==null){
+                document.querySelector(".modal-wrapper").style.display="none";
+            }
+            document.querySelector(".modal-wrapper .victory-message").innerHTML="";
+            moves_used = 0;
+            update_score();
         }
 
+        function set_game_mode(tiles=10){
+            grid_size = tiles;
+        }
         function spill_color(event){
             let color_box = event.target;
             document.querySelectorAll(".color-pot").forEach(el=>el.classList.remove("last_clicked"));
@@ -86,11 +114,32 @@
             previous_color = getcolor(first_box);
             // to be done, check if the color clicked is different from what already is
             
+            moves_used ++;
+            update_score();
             setcolor(first_box,color_to_spread);
 
             spill_to_adjacent_boxes(first_box);
+
+            let victory = check_if_game_over()
+            if (victory){
+                do_a_victory_lap();
+            }
         }
 
+        function do_a_victory_lap(){
+            document.querySelector(".modal-wrapper .victory-message").innerHTML = `Victory in ${moves_used} moves.`;
+            document.querySelector(".modal-wrapper").style.display="";
+        }
+        function check_if_game_over(){
+            let color_pending = new Set();
+            document.querySelectorAll(".box").forEach(box=>color_pending.add(getcolor(box)));
+            return (color_pending.size == 1);
+        }
+
+        function update_score(){
+            const score_span = document.querySelector(".info-box .score");
+            score_span.innerText = `Moves used ${moves_used}`;
+        }
         function find_adjacent_boxes(box){
             let return_arary = [];
             let to_right = box.nextElementSibling;
@@ -155,6 +204,36 @@
             overflow-y: auto;
         }
 
+        .modal-wrapper {
+            display: grid;
+            position: absolute;
+            place-content: center;
+            width: 100vw;
+            height: clamp(100svh,100%,100vh);
+
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        .modal-wrapper .modal-window {
+            height: fit-content;
+            width:300px;
+            background-color: white;
+            border-radius: 10px;
+
+            padding:20px;
+
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            gap:20px;
+        }
+
+        .modal-wrapper .game_mode_selector {
+            display: flex;
+            flex-flow: row nowrap;
+            gap:2rem;
+        }
         workspace {
             width:375px;
 
@@ -190,12 +269,27 @@
         }
         .info-box {
             display: grid;
-            grid-template-columns: 1fr 60px;
+            grid-template-columns: 1fr 100px;
+        }
+
+        .info-box img {
+            cursor: pointer;
         }
 
         .info-box div {
             display: grid;
             place-content: center;
+        }
+
+        .info-box .title-score {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-around;
+        }
+
+        .info-box .action_buttons {
+            display: flex;
+            flex-flow:row nowrap;
         }
 
         .playground {
@@ -273,6 +367,16 @@
 
         .color-pots .color-pot.last_clicked {
             background-image: url(img/paint.svg);
+        }
+
+        button.btn {
+            border-radius: 5px;
+            background-color: #00d1b2;
+            color:white;
+            padding:10px 12px;
+            border:1px solid #dadada;
+            margin:0;
+
         }
     </style>
 </body>

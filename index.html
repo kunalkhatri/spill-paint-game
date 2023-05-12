@@ -11,9 +11,9 @@
         <div class="modal-window">
             <div class="victory-message"></div>
             <div class="game_mode_selector">
-                <label for="game_easy"><input type="radio" id="game_easy" name="game-level" onclick="set_game_mode(5);"> Easy [5x5]</label>
-                <label for="game_medium"><input type="radio" id="game_medium" name="game-level" checked onclick="set_game_mode(10);"> Normal [10x10]</label>
-                <label for="game_hard"><input type="radio" id="game_hard" name="game-level" onclick="set_game_mode(15);"> Hard [15x15]</label>
+                <input type="radio" id="game_easy" name="game-level" onclick="set_game_mode(5);"><label for="game_easy">Easy [5x5]</label>
+                <input type="radio" id="game_medium" name="game-level" checked onclick="set_game_mode(10);"><label for="game_medium">Normal [10x10]</label>
+                <input type="radio" id="game_hard" name="game-level" onclick="set_game_mode(15);"><label for="game_hard">Hard [15x15]</label>
             </div>
             <br>
             <button class="btn primary" onclick="setup_board();">Start Game</button>
@@ -232,8 +232,35 @@
         .modal-wrapper .game_mode_selector {
             display: flex;
             flex-flow: row nowrap;
-            gap:2rem;
+            gap:.2rem;
+            position: relative;
+
+            font-size: .90em;
+
+            justify-content: space-between;
         }
+
+        .modal-wrapper .game_mode_selector input{
+            opacity: 0;
+            position: absolute;
+        }
+
+        
+        .modal-wrapper .game_mode_selector label {
+            padding: 5px;
+            border-radius: 5px;
+            display: grid;
+            place-content: center;
+            color:black;
+            background-color: #dadada;
+        }
+        
+        .modal-wrapper .game_mode_selector input:checked + label {
+            background-color: #00d1b2;
+            color:white;
+            font-weight: bold;
+        }
+
         workspace {
             width:375px;
 

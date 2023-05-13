@@ -15,8 +15,15 @@
                 <input type="radio" id="game_medium" name="game-level" checked onclick="set_game_mode(10);"><label for="game_medium">Normal [10x10]</label>
                 <input type="radio" id="game_hard" name="game-level" onclick="set_game_mode(15);"><label for="game_hard">Hard [15x15]</label>
             </div>
-            <br>
             <button class="btn primary" onclick="setup_board();">Start Game</button>
+            <div class="high-scores">
+                <h4>Previous High Scores</h4>
+                <div class="score-values">
+                    <span>Easy</span><span id="score-easy-figure" ></span>
+                    <span>Medium</span><span id="score-normal-figure"></span>
+                    <span>Hard</span><span id="score-hard-figure"></span>
+                </div>
+            </div>
         </div>
     </div>
     <workspace>
@@ -96,10 +103,38 @@
                 document.querySelector(".modal-wrapper").style.display="none";
             }
             document.querySelector(".modal-wrapper .victory-message").innerHTML="";
+            update_high_scores_display();
             moves_used = 0;
             update_score();
         }
 
+        var user_high_scores;
+        function update_high_scores_display(){
+            // finding previous high scores
+            const prev_high_scores = window.localStorage.getItem("high_scores");
+            if (prev_high_scores){
+                user_high_scores = JSON.parse(prev_high_scores);
+                document.getElementById("score-easy-figure").innerText = user_high_scores.easy??"--";
+                document.getElementById("score-normal-figure").innerText = user_high_scores.normal??"--";
+                document.getElementById("score-hard-figure").innerText = user_high_scores.hard??"--";
+            } else {
+                window.localStorage.setItem("high_scores",JSON.stringify({
+                    easy:null,
+                    normal:null,
+                    hard:null
+                }));
+                update_high_scores_display();
+            }
+        }
+
+        function update_high_score_localstorage(){
+            const current_mode = {5:"easy",10:"normal",15:"hard"}[grid_size];
+            if (user_high_scores[current_mode] > moves_used || user_high_scores[current_mode] == null){
+                user_high_scores[current_mode] = moves_used;
+                window.localStorage.setItem("high_scores",JSON.stringify(user_high_scores));
+                update_high_scores_display();
+            }
+        }
         function set_game_mode(tiles=10){
             grid_size = tiles;
         }
@@ -129,6 +164,10 @@
         function do_a_victory_lap(){
             document.querySelector(".modal-wrapper .victory-message").innerHTML = `Victory in ${moves_used} moves.`;
             document.querySelector(".modal-wrapper").style.display="";
+
+            // updating high scores
+            update_high_score_localstorage();
+
         }
         function check_if_game_over(){
             let color_pending = new Set();
@@ -259,6 +298,11 @@
             background-color: #00d1b2;
             color:white;
             font-weight: bold;
+        }
+
+        .modal-wrapper .high-scores .score-values{
+            display: grid;
+            grid-template-columns: auto auto;
         }
 
         workspace {

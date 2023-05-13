@@ -7,6 +7,14 @@
     <title>paint spill game - Kunal Khatri</title>
 </head>
 <body>
+    <div class="credits">
+        <a href="https://github.com/kunalkhatri/spill-paint-game" target="_blank" >
+            <img src="img/github-mark.png" />
+        </a>
+        <a href="https://www.loop91.com" target="_blank">
+            <img src="img/loop91.svg" />
+        </a>
+    </div>
     <div class="modal-wrapper">
         <div class="modal-window">
             <div class="victory-message"></div>
@@ -243,6 +251,21 @@
             overflow-y: auto;
         }
 
+        .credits {
+            position: absolute;
+            bottom: 10px;
+            width: 100vw;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap:20px;
+            z-index: 0;
+        }
+
+        .credits img {
+            height: 25px;
+        }
         .modal-wrapper {
             display: grid;
             position: absolute;
@@ -315,6 +338,7 @@
             display: flex;
             flex-flow: column;
             overflow: hidden;
+            z-index: 1;
         }
 
         .expandable {

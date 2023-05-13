@@ -237,10 +237,11 @@
             font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
         }
         body {
-            display: grid;
-            place-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
 
-            width: 100vw;
+            width: 100%;
             height: 100svh;
 
             background-color: #555;
@@ -325,7 +326,7 @@
         }
 
         workspace {
-            width:375px;
+            width: clamp(375px,80%,600px);
 
             border-radius: 5px;
             background-color: white;
@@ -335,6 +336,9 @@
             flex-flow: column;
             overflow: hidden;
             z-index: 1;
+
+            height: fit-content;
+            max-height: 100%;
         }
 
         .expandable {
@@ -392,7 +396,7 @@
             gap:var(--gap-between-tiles);
 
             transition: all ease .24s;
-            overflow: hidden;
+            overflow: auto;
 
             max-height: fit-content;
         }
@@ -413,6 +417,7 @@
 
         .playground .row .box {
             border:1px solid transparent;
+            transition: all ease .24s;
         }
         .playground .row:first-of-type .box:first-of-type {
             border:1px solid black;

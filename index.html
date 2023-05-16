@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>paint spill game - Kunal Khatri</title>
+    <link rel="icon" type="image/x-svg" href="/img/favicon.svg">
+    <title>Spill paint : game &copy; Kunal Khatri</title>
 </head>
 <body>
     <div class="credits">
@@ -48,6 +49,9 @@
                 <div class="score">
                     Moves used 0
                 </div>
+                <div class="show_icons_wrapper">
+                    <input type="checkbox" id="accesibility_checkbox" onchange="javascript:toggle_accesibility();" > <label for="accesibility_checkbox">Show icons</label>
+                </div>
             </div>
             <div class="action_buttons">
                 <img src="img/refresh.svg" alt="new game" onclick="document.querySelector('.modal-wrapper').style.display='';" width="40" >
@@ -57,24 +61,54 @@
         <div class="playground" id="playground">
         </div>
         <div class="color-pots">
-            <div class="color-pot" ></div> 
-            <div class="color-pot" ></div> 
-            <div class="color-pot" ></div> 
-            <div class="color-pot" ></div> 
-            <div class="color-pot" ></div> 
-            <div class="color-pot" ></div> 
+            <div class="color-pot" >
+                <img class="accesbility_box" />
+            </div> 
+            <div class="color-pot" >
+                <img class="accesbility_box" />
+            </div> 
+            <div class="color-pot" >
+                <img class="accesbility_box" />
+            </div> 
+            <div class="color-pot" >
+                <img class="accesbility_box" />
+            </div> 
+            <div class="color-pot" >
+                <img class="accesbility_box" />
+            </div> 
+            <div class="color-pot" >
+                <img class="accesbility_box" />
+            </div> 
         </div>
     </workspace>
     <script>
         var moves_used = 0;
         var grid_size = 10;
         const color_array = [
-            '#FF1500',
-            '#f9c440',
-            '#68b723',
-            '#3689e6',
-            '#a56de2',
-            '#C16700'
+        {
+                color:'#FF1500',
+                icon : "img/accesibility/icon-1.svg"
+            },
+            {
+                color:'#f9c440',
+                icon : "img/accesibility/icon-2.svg"
+            },
+            {
+                color:'#68b723',
+                icon : "img/accesibility/icon-3.svg"
+            },
+            {
+                color:'#3689e6',
+                icon : "img/accesibility/icon-4.svg"
+            },
+            {
+                color:'#a56de2',
+                icon : "img/accesibility/icon-5.svg"
+            },
+            {
+                color:'#C16700',
+                icon : "img/accesibility/icon-6.svg"
+            }
         ];
 
         var previous_color = "";
@@ -84,11 +118,19 @@
         function setup_board(event=null) {
 
             document.querySelectorAll(".color-pot").forEach((el,i)=>{
-                el.style.backgroundColor = color_array[i];
-                el.setAttribute("data-color",color_array[i]);
+                let box_icon  = color_array[i].icon;
+                el.style.backgroundColor = color_array[i].color;
 
+                el.setAttribute("data-color",color_array[i].color);
+                el.setAttribute("data-icon", box_icon);
+                el.querySelector(".accesbility_box").src = box_icon;
                 el.addEventListener("click",spill_color);
+
+                el.classList.remove("last_clicked");
+
             });
+
+
             const playground = document.getElementById("playground");
             playground.innerHTML = "";
             for (let i =0;i<grid_size;i++){
@@ -97,9 +139,16 @@
                 for (let j =0;j<grid_size;j++){
                     let box = document.createElement("div");
                     box.className="box";
-                    let box_color = color_array[parseInt(Math.random()*color_array.length)];
+                    let color_index = parseInt(Math.random()*color_array.length);
+                    let box_color = color_array[color_index].color;
+                    let box_icon  = color_array[color_index].icon;
                     box.setAttribute("data-color",box_color);
-                    box.setAttribute("data-identifiers",`${i}-${j}`)
+                    box.setAttribute("data-icon",box_icon)
+                    box.setAttribute("data-identifiers",`${i}-${j}`);
+                        let access_box = document.createElement("img");
+                        access_box.classList.add("accesbility_box");
+                        access_box.src = box_icon;
+                    box.appendChild(access_box);
                     box.style.backgroundColor = box_color;
                     row.appendChild(box);
                 }
@@ -112,6 +161,24 @@
             update_high_scores_display();
             moves_used = 0;
             update_score();
+
+            // accesibility from localStorage
+            let previous_accesibility_value = window.localStorage.getItem("accesibility_show_icons");
+            if(previous_accesibility_value == null ) {
+                window.localStorage.setItem("accesibility_show_icons","false");
+                previous_accesibility_value = "false";
+            }
+
+            if (previous_accesibility_value  == "true"){
+                document.querySelector("#accesibility_checkbox").setAttribute("checked",true);
+            }
+            else {
+                document.querySelector("#accesibility_checkbox").removeAttribute("checked");
+            }
+            toggle_accesibility();
+
+
+
         }
 
         var user_high_scores;
@@ -149,15 +216,20 @@
             document.querySelectorAll(".color-pot").forEach(el=>el.classList.remove("last_clicked"));
             color_box.classList.add("last_clicked");
             let color_to_spread = color_box.getAttribute("data-color");
+            let icon_to_spread = color_box.getAttribute("data-icon");
             
             
             let first_box = document.querySelector(".playground .row:first-of-type .box:first-of-type");
-            previous_color = getcolor(first_box);
+            previous_color = getcolor(first_box).color;
+
             // to be done, check if the color clicked is different from what already is
-            
+            if (color_to_spread == previous_color){
+                return;
+            }
+
             moves_used ++;
             update_score();
-            setcolor(first_box,color_to_spread);
+            setcolor(first_box,color_to_spread,icon_to_spread);
 
             spill_to_adjacent_boxes(first_box);
 
@@ -168,16 +240,21 @@
         }
 
         function do_a_victory_lap(){
+
             document.querySelector(".modal-wrapper .victory-message").innerHTML = `Victory in ${moves_used} moves.`;
             document.querySelector(".modal-wrapper").style.display="";
-
+            confetti({
+                particleCount: 200,
+                spread: 70,
+                origin: { y: 0.6 },
+            });
             // updating high scores
             update_high_score_localstorage();
 
         }
         function check_if_game_over(){
             let color_pending = new Set();
-            document.querySelectorAll(".box").forEach(box=>color_pending.add(getcolor(box)));
+            document.querySelectorAll(".box").forEach(box=>color_pending.add(getcolor(box).color));
             return (color_pending.size == 1);
         }
 
@@ -206,12 +283,13 @@
 
         function spill_to_adjacent_boxes(first_box){
             let adjacent_boxes = find_adjacent_boxes(first_box);
-            var current_color = getcolor(first_box);
+            var current_color = getcolor(first_box).color;
+            var current_icon  = getcolor(first_box).icon;
 
             let more_boxes_to_process=[];
             adjacent_boxes.forEach(box=>{
-                if (getcolor(box) == previous_color){
-                    setcolor(box,getcolor(first_box));
+                if (getcolor(box).color == previous_color){
+                    setcolor(box,current_color,current_icon);
                     more_boxes_to_process.push(box);
                 }
             });
@@ -219,11 +297,31 @@
         }
 
         function getcolor(box){
-            return box.getAttribute("data-color");
+            return {
+                color   : box.getAttribute("data-color"),
+                icon    : box.querySelector(".accesbility_box").src
+            };
         }
-        function setcolor(box,color){
+
+        function setcolor(box,color,icon){
             box.setAttribute("data-color",color);
             box.style.backgroundColor = color;
+            box.querySelector(".accesbility_box").src=icon;
+        }
+
+        function toggle_accesibility(){
+            const accesibility = document.querySelector("#accesibility_checkbox").checked;
+            if (accesibility){
+                document.querySelector('.playground').classList.add("show_icons");
+                document.querySelector('.color-pots').classList.add("show_icons");
+                window.localStorage.setItem("previous_accesibility_value","true");
+            }
+            else {
+                document.querySelector('.playground').classList.remove("show_icons");
+                document.querySelector('.color-pots').classList.remove("show_icons");
+
+                window.localStorage.setItem("previous_accesibility_value","false");
+            }
         }
     </script>
     <style>
@@ -231,12 +329,14 @@
             --color-pot-size:50px;
             --color-pot-size:50px;
             --gap-between-tiles:1px;
+            --btn-bck-color : #00d1b2;
         }
 
         * {
             padding: 0;
             margin:0;
             font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+            box-sizing: border-box;
         }
         body {
             display: flex;
@@ -338,7 +438,7 @@
         }
         
         .modal-wrapper .game_mode_selector input:checked + label {
-            background-color: #00d1b2;
+            background-color: var(--btn-bck-color);
             color:white;
             font-weight: bold;
         }
@@ -362,6 +462,19 @@
 
             height: fit-content;
             max-height: 100%;
+        }
+
+        .show_icons_wrapper label {
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .show_icons_wrapper input[type=checkbox]{
+            display: none;
+        }
+
+        .show_icons_wrapper input[type=checkbox]:checked + label {
+            background-color:var(--btn-bck-color);
         }
 
         .info-box {
@@ -419,9 +532,15 @@
         .playground .row .box {
             border:1px solid transparent;
             transition: all ease .24s;
+
+            display: grid;
+            place-content: center;
+            justify-content: stretch;
+            align-content: stretch;
+
         }
         .playground .row:first-of-type .box:first-of-type {
-            border:2px solid black;
+            outline:1px solid black;
         }
         .playground .row .box {
             background-color: red;
@@ -429,8 +548,22 @@
             flex-grow: 1;
             aspect-ratio: 1/1;
             border-radius: 1px;
+
+            display: grid;
+            place-content: center;
         }
 
+        .playground .row .box .accesbility_box, .color-pots .color-pot .accesbility_box  {
+            width: 100%;
+            height: fit-content;
+            opacity: 0;
+
+            pointer-events: none;
+        }
+
+        .playground.show_icons .row .box .accesbility_box, .color-pots.show_icons .color-pot .accesbility_box {
+            opacity: 1;
+        }
 
 
         .color-pots {
@@ -448,7 +581,10 @@
         }
 
         .color-pots .color-pot {
-            display: block;
+            display: grid;
+            justify-content: stretch;
+            align-content: stretch;
+
             width: var(--color-pot-size);
             height: var(--color-pot-size);
             content: attr(data-color);
@@ -463,18 +599,23 @@
         }
 
         .color-pots .color-pot.last_clicked {
-            background-image: url(img/paint.svg);
+            outline: 2px solid black;
         }
 
         button.btn {
             border-radius: 5px;
-            background-color: #00d1b2;
+            background-color: var(--btn-bck-color);
             color:white;
             padding:10px 12px;
             border:1px solid #dadada;
             margin:0;
 
         }
+
+        #confetti {
+            position: absolute;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.9.3/tsparticles.confetti.bundle.min.js" defer></script>
 </body>
 </html>

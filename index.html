@@ -31,13 +31,15 @@
             </div>
         </div>
     </div>
-    <workspace>
-        <div class="expandable">
-            <img src="img/close.svg" alt="close help box" class="help-close-button" onclick="document.querySelector('workspace').classList.toggle('expanded');" width="40"/>
+    <div id="help">
+        <div class="content">
+            <img src="img/close.svg" alt="close help box" class="help-close-button" onclick="document.querySelector('#help').classList.toggle('shown');" width="40"/>
             <img src="img/image.png" height="300" width="200" />
-            <b>Fill the board with al lthe same colour paint before running out of moves.</b>
+            <b>Fill the board with all the same colour paint in smallest number of moves.</b>
             <span>Click the paint buttons at bottom to spill a new paint colour onto the board starting in the top-left colour. <br/>Newly Adjancent squares of the same colour add to the total filled space.</span>
         </div>
+    </div>
+    <workspace>
         <div class="info-box">
             <div class="title-score">
                 <div class="title">
@@ -49,7 +51,7 @@
             </div>
             <div class="action_buttons">
                 <img src="img/refresh.svg" alt="new game" onclick="document.querySelector('.modal-wrapper').style.display='';" width="40" >
-                <img src="img/help.svg" alt="help button" onclick="document.querySelector('workspace').classList.toggle('expanded');" width="40" >
+                <img src="img/help.svg" alt="help button" onclick="document.querySelector('#help').classList.toggle('shown');" width="40" >
             </div>
         </div>
         <div class="playground" id="playground">
@@ -248,6 +250,7 @@
             overflow-y: auto;
         }
 
+
         .credits {
             position: absolute;
             bottom: 10px;
@@ -260,10 +263,12 @@
             z-index: 0;
         }
 
+
+
         .credits img {
             height: 25px;
         }
-        .modal-wrapper {
+        .modal-wrapper, #help {
             display: grid;
             position: absolute;
             place-content: center;
@@ -274,7 +279,9 @@
             z-index: 100;
         }
 
-        .modal-wrapper .modal-window {
+
+        
+        .modal-wrapper .modal-window, #help .content {
             height: fit-content;
             width:300px;
             background-color: white;
@@ -286,6 +293,22 @@
             flex-flow: column;
             justify-content: center;
             gap:20px;
+
+            border:1px solid #000
+        }
+
+        #help .content {
+            align-items: center;
+        }
+
+        #help .help-close-button {
+            align-self: flex-end;
+        }
+        #help {
+            display: none;
+        }
+        #help.shown {
+            display: grid;
         }
 
         .modal-wrapper .game_mode_selector {
@@ -341,27 +364,6 @@
             max-height: 100%;
         }
 
-        .expandable {
-            display: flex;
-            flex-flow: column;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid #dadada;            
-            
-            overflow: hidden;
-            max-height: 0;
-
-            transition: all ease .25s;
-
-        }
-        .expandable .help-close-button {
-            align-self: flex-end;
-        }
-
-        workspace.expanded .expandable {
-            max-height: 500px;
-            padding: 20px;
-        }
         .info-box {
             display: grid;
             grid-template-columns: 1fr 100px;
@@ -398,7 +400,6 @@
             transition: all ease .24s;
             overflow: auto;
 
-            max-height: fit-content;
         }
 
         workspace.expanded .playground, workspace.expanded .color-pots {
@@ -420,7 +421,7 @@
             transition: all ease .24s;
         }
         .playground .row:first-of-type .box:first-of-type {
-            border:1px solid black;
+            border:2px solid black;
         }
         .playground .row .box {
             background-color: red;

@@ -41,16 +41,16 @@
         </div>
     </div>
     <workspace>
+        <div class="title">
+            Paint Spill game
+        </div>
         <div class="info-box">
             <div class="title-score">
-                <div class="title">
-                    Paint Spill game
-                </div>
                 <div class="score">
-                    Moves used 0
+                    Moves used <span class='score-figure'>0</span>
                 </div>
                 <div class="show_icons_wrapper">
-                    <input type="checkbox" id="accesibility_checkbox" onchange="javascript:toggle_accesibility();" > <label for="accesibility_checkbox">Show icons</label>
+                    <label for="accesibility_checkbox"><input type="checkbox" id="accesibility_checkbox" onchange="javascript:toggle_accesibility();" > Show icons</label>
                 </div>
             </div>
             <div class="action_buttons">
@@ -244,9 +244,9 @@
             document.querySelector(".modal-wrapper .victory-message").innerHTML = `Victory in ${moves_used} moves.`;
             document.querySelector(".modal-wrapper").style.display="";
             confetti({
-                particleCount: 200,
-                spread: 70,
-                origin: { y: 0.6 },
+                particleCount: 400,
+                spread: 100,
+                origin: { y: 0.5,x:0.5 },
             });
             // updating high scores
             update_high_score_localstorage();
@@ -259,8 +259,8 @@
         }
 
         function update_score(){
-            const score_span = document.querySelector(".info-box .score");
-            score_span.innerText = `Moves used ${moves_used}`;
+            const score_span = document.querySelector(".info-box .score .score-figure");
+            score_span.innerText = moves_used;
         }
         function find_adjacent_boxes(box){
             let return_arary = [];
@@ -464,17 +464,11 @@
             max-height: 100%;
         }
 
-        .show_icons_wrapper label {
-            padding: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .show_icons_wrapper input[type=checkbox]{
-            display: none;
-        }
-
-        .show_icons_wrapper input[type=checkbox]:checked + label {
-            background-color:var(--btn-bck-color);
+        workspace .title {
+            display: grid;
+            place-content: center;
+            padding:5px;
+            font-weight: bold;
         }
 
         .info-box {
@@ -494,7 +488,21 @@
         .info-box .title-score {
             display: flex;
             flex-flow: row nowrap;
-            justify-content: space-around;
+            align-items: baseline;
+            gap:20px;
+        }
+
+        .info-box .title-score .score {
+            display: flex;
+            flex-flow: row nowrap;
+            gap:10px;
+
+            align-items: baseline;
+        }
+
+        .info-box .title-score .score .score-figure {
+            font-size: 1.2em;
+            font-weight: bold;
         }
 
         .info-box .action_buttons {

@@ -244,9 +244,9 @@
             document.querySelector(".modal-wrapper .victory-message").innerHTML = `Victory in ${moves_used} moves.`;
             document.querySelector(".modal-wrapper").style.display="";
             confetti({
-                particleCount: 400,
-                spread: 100,
-                origin: { y: 0.5,x:0.5 },
+                particleCount: 1000,
+                spread: 10,
+                origin: { y: 1,x:0.5 },
             });
             // updating high scores
             update_high_score_localstorage();
@@ -469,6 +469,7 @@
             place-content: center;
             padding:5px;
             font-weight: bold;
+            background-color: beige;
         }
 
         .info-box {
@@ -488,7 +489,7 @@
         .info-box .title-score {
             display: flex;
             flex-flow: row nowrap;
-            align-items: baseline;
+            align-items: center;
             gap:20px;
         }
 

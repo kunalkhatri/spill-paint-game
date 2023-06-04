@@ -18,12 +18,13 @@
             <img src="img/github-mark.png" />
         </a>
     </div>
-    <div class="modal-wrapper">
+    <div class="modal-wrapper" id="modal-wrapper-new-game" >
         <div class="modal-window">
+            <img class="help-close-button" src="img/close.svg" alt="Close modal window" onclick="document.getElementById('modal-wrapper-new-game').style.display='none';" />
             <div class="victory-message"></div>
             <div class="game_mode_selector">
                 <input type="radio" id="game_easy" name="game-level" onclick="set_game_mode(5);"><label for="game_easy">Easy [5x5]</label>
-                <input type="radio" id="game_medium" name="game-level" checked onclick="set_game_mode(10);"><label for="game_medium">Normal [10x10]</label>
+                <input type="radio" id="game_medium" name="game-level" checked onclick="set_game_mode(10);"><label for="game_medium">Medium [10x10]</label>
                 <input type="radio" id="game_hard" name="game-level" onclick="set_game_mode(15);"><label for="game_hard">Hard [15x15]</label>
             </div>
             <button class="btn primary" onclick="setup_board();">Start Game</button>
@@ -406,8 +407,9 @@
             align-items: center;
         }
 
-        #help .help-close-button {
+        .help-close-button {
             align-self: flex-end;
+            height:40px;
         }
         #help {
             display: none;

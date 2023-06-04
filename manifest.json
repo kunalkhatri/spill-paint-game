@@ -1,0 +1,31 @@
+{
+"display_override": ["window-controls-overlay"], 
+"protocol_handlers": [{"protocol":"mailto","url":"/newEmail?to=%s"}], 
+"name": "Spill Paint Game | loop91.com",
+"short_name": "Spill paint game",
+"start_url": "https://spill-paint-game.loop91.com/",
+"display": "standalone",
+"description": "Fill the board with all the same colour paint in smallest number of moves.",
+"lang": "English",
+"dir": "auto",
+"theme_color": "#000000",
+"background_color": "#000000",
+"orientation": "portrait",
+"icons": [
+    {
+        "src": "https://spill-paint-game.loop91.com/img/favicon.svg",
+        "sizes": "512x512",
+        "type": "image/svg",
+        "purpose": "maskable"
+    }
+],
+"screenshots": [
+    {
+        "src": "https://spill-paint-game.loop91.com/img/image.png",
+        "sizes": "200x300",
+        "type": "image/png",
+        "description": "Gameplay First page"
+    }
+],
+"prefer_related_applications": false
+}

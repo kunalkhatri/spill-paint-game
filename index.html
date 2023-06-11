@@ -121,7 +121,13 @@
 
         window.addEventListener("load",setup_board);
 
+        let send_beacon_to_home = async () => {
+            fetch(`https://newgamebeacon.loop91.com/?mode=${grid_size}`);
+        }
+
         function setup_board(event=null) {
+
+            send_beacon_to_home();
 
             document.querySelectorAll(".color-pot").forEach((el,i)=>{
                 let box_icon  = color_array[i].icon;

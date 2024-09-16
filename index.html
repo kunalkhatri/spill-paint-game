@@ -119,15 +119,7 @@
 
         var previous_color = "";
 
-        window.addEventListener("load",setup_board);
-
-        let send_beacon_to_home = async () => {
-            fetch(`https://newgamebeacon.loop91.com/?mode=${grid_size}`);
-        }
-
         function setup_board(event=null) {
-
-            send_beacon_to_home();
 
             document.querySelectorAll(".color-pot").forEach((el,i)=>{
                 let box_icon  = color_array[i].icon;
@@ -256,8 +248,8 @@
             document.querySelector(".modal-wrapper .victory-message").innerHTML = `Victory in ${moves_used} moves.`;
             document.querySelector(".modal-wrapper").style.display="";
             confetti({
-                particleCount: 100,
-                spread: 10,
+                particleCount: 1000,
+                spread: 100,
                 origin: { y: 1,x:0.5 },
             });
             // updating high scores
